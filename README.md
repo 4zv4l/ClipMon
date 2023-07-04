@@ -6,7 +6,7 @@ Clipboard Monitoring during RDP Session.
 
 - [X] Basic injection hooking `MessageBoxA`
 - [X] CreateProcess with `DEBUG_PROCESS`
-- [X] Proper logging
+- [X] Proper logging system
 - [ ] Hook `SetClipboardData`
 - [ ] Hook `GetClipboardData`
 - [ ] Use proper lib (clipboard-win) to handle the clipboard in the hooked function
