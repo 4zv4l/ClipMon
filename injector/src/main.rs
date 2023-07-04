@@ -29,7 +29,7 @@ fn setup_logging() -> WorkerGuard {
 }
 
 fn main() {
-    const TARGET: &str = "rdpclip.exe";
+    const TARGET: &str = "clipboard.exe";
     const DLL: &str = "clipmon.dll";
 
     let _guard = setup_logging();
