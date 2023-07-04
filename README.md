@@ -1,6 +1,6 @@
 # ClipMon
 
-Clipboard Monitoring during RDP Session in Rust
+Clipboard Monitoring during RDP Session.
 
 ## TODO
 
@@ -9,3 +9,4 @@ Clipboard Monitoring during RDP Session in Rust
 - [ ] Use proper lib (clipboard-win) to handle the clipboard in the hooked function
 - [ ] Setup config file
 - [ ] Proper logging
+- [ ] Update `README.md` with *installation* and *setup* instructions
