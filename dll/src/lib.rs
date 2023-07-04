@@ -35,5 +35,5 @@ unsafe extern "system" fn DllMain(_hinst: HANDLE, reason: u32, _reserved: *mut c
         DLL_PROCESS_DETACH => {},
         _ => {},
     };
-    return BOOL::from(true);
+    BOOL::from(true)
 }

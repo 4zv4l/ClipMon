@@ -19,6 +19,5 @@ fn detour_set_clipboard_data(uformat: u32, hmem: HANDLE) -> HANDLE {
     let str = "Hooked :)";
     let _ = set_clipboard(formats::Unicode, str);
     tracing::info!("SetClipboardData :: {str}");
-    let ret = unsafe { HookSetClipboardData.call(uformat, hmem) };
-    ret
+    unsafe { HookSetClipboardData.call(uformat, hmem) }
 }

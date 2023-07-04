@@ -18,6 +18,5 @@ pub fn hook_get_clipboard_data() {
 fn detour_get_clipboard_data(uformat: u32) -> HANDLE {
     let content: String = get_clipboard(formats::Unicode).unwrap_or("".into());
     tracing::info!("GetClipboardData :: {content}");
-    let ret = unsafe { HookGetClipboardData.call(uformat) };
-    ret
+    unsafe { HookGetClipboardData.call(uformat) }
 }
