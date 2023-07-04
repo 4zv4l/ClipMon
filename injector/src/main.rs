@@ -34,11 +34,18 @@ fn main() {
 
     let _guard = setup_logging();
 
+    // if TARGET is already running, kill it
+    if let Some(process) = OwnedProcess::find_first_by_name(TARGET) {
+        let _ = process.kill_on_drop();
+    }
+
+    // start TARGET in debug mode (avoid IFEO)
     tracing::info!("Creating {TARGET}");
     match start_process(TARGET) {
         Ok(proc) => tracing::info!("{TARGET} is Created => {}", proc.id()),
         Err(e) => {tracing::error!("{e}");return}
     };
+
     match OwnedProcess::find_first_by_name(TARGET) {
         Some(process) => {
             tracing::info!("found {:?}", process);
