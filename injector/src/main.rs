@@ -29,7 +29,7 @@ fn main() {
     let _guard = setup_logging();
     
     tracing::info!("Creating {TARGET}");
-    let mut proc = start_process(TARGET).unwrap();
+    let proc = start_process(TARGET).unwrap();
     tracing::info!("{TARGET} is Created => {}", proc.id());
     match OwnedProcess::find_first_by_name(TARGET) {
         Some(process) => {
@@ -43,10 +43,6 @@ fn main() {
         },
         None => {
             tracing::error!("couldn't find {TARGET}");
-            proc.kill().unwrap();
-            return
         }
     }
-    std::thread::sleep(std::time::Duration::from_secs(60));
-    proc.kill().unwrap();
 }
