@@ -1,9 +1,11 @@
 #![cfg(target_os = "windows")]
 
+// logging
 use tracing_appender::non_blocking::WorkerGuard;
 use tracing_subscriber::fmt;
 use tracing_subscriber::prelude::*;
-
+use std::fs::create_dir_all;
+// dll injection
 use dll_syringe::{Syringe, process::OwnedProcess};
 use std::process::Command;
 use std::os::windows::process::CommandExt;
@@ -18,7 +20,10 @@ fn start_process(proc: &str) -> Result<std::process::Child, std::io::Error> {
 }
 
 fn setup_logging() -> WorkerGuard {
-    let file_appender = tracing_appender::rolling::daily("", "clipmon.log");
+    // log path => AppData\Local\ClipMon
+    let log_path = dirs::cache_dir().unwrap().join("ClipMon");
+    create_dir_all(&log_path).unwrap();
+    let file_appender = tracing_appender::rolling::daily(log_path, "clipmon.log");
     let (file_writer, guard) = tracing_appender::non_blocking(file_appender);
     tracing::subscriber::set_global_default(
         fmt::Subscriber::builder()
@@ -29,8 +34,8 @@ fn setup_logging() -> WorkerGuard {
 }
 
 fn main() {
-    const TARGET: &str = "clipboard.exe";
-    const DLL: &str = "clipmon.dll";
+    const TARGET: &str = "rdpclip.exe";
+    const DLL: &str = r"C:\CliProtect\clipmon.dll";
 
     let _guard = setup_logging();
 
