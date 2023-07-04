@@ -4,20 +4,22 @@ use dll_syringe::{Syringe, process::OwnedProcess};
 use std::process::Command;
 use std::os::windows::process::CommandExt;
 
+extern "system" { fn DebugActiveProcessStop(dwProcessId: u32) -> bool; }
+
 fn start_process(proc: &str) -> Result<std::process::Child, std::io::Error> {
     const DEBUG_PROCESS: u32 = 0x00000001;
-    const DETACHED_PROCESS: u32 = 0x00000008;
-    Command::new(proc).creation_flags(DEBUG_PROCESS|DETACHED_PROCESS).spawn()
+    let proc = Command::new(proc).creation_flags(DEBUG_PROCESS).spawn()?;
+    unsafe { DebugActiveProcessStop(proc.id()); }
+    Ok(proc)
 }
 
 fn main() {
-    const TARGET_EXE: &str = "loop_messagebox.exe";
-    const TARGET: &str = "loop_messagebox";
+    const TARGET: &str = "loop_messagebox.exe";
     const DLL: &str = "clipmon.dll";
     
-    println!("Creating {TARGET_EXE}");
-    let proc = start_process(TARGET_EXE).unwrap();
-    println!("{TARGET_EXE} is Created => {}", proc.id());
+    println!("Creating {TARGET}");
+    let mut proc = start_process(TARGET).unwrap();
+    println!("{TARGET} is Created => {}", proc.id());
     match OwnedProcess::find_first_by_name(TARGET) {
         Some(process) => {
             println!("found {:?}", process);
@@ -32,4 +34,6 @@ fn main() {
             return eprintln!("couldn't find {TARGET}");
         }
     }
+    std::thread::sleep(std::time::Duration::from_secs(10));
+    proc.kill().unwrap();
 }
