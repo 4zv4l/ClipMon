@@ -7,7 +7,7 @@ use tracing_appender::non_blocking::WorkerGuard;
 use std::os::raw::c_void;
 use windows::Win32::Foundation::*;
 // DLlMain
-use windows::Win32::System::SystemServices::{DLL_PROCESS_ATTACH, DLL_PROCESS_DETACH};
+use windows::Win32::System::SystemServices::DLL_PROCESS_ATTACH;
 // GetClipboardData
 mod set_clipboard_data;
 // SetClipboardData
@@ -24,16 +24,12 @@ fn setup_logging() -> WorkerGuard {
 
 #[no_mangle]
 unsafe extern "system" fn DllMain(_hinst: HANDLE, reason: u32, _reserved: *mut c_void) -> BOOL {
-    match reason {
-        DLL_PROCESS_ATTACH => {
-            GUARD.set(setup_logging()).unwrap();
-            tracing::info!("Dll is injected");
-            get_clipboard_data::hook_get_clipboard_data();
-            set_clipboard_data::hook_set_clipboard_data();
-            tracing::info!("The hooks are setup");
-        },
-        DLL_PROCESS_DETACH => {},
-        _ => {},
-    };
+    if reason == DLL_PROCESS_ATTACH {
+        GUARD.set(setup_logging()).unwrap();
+        tracing::info!("Dll is injected");
+        get_clipboard_data::hook_get_clipboard_data();
+        set_clipboard_data::hook_set_clipboard_data();
+        tracing::info!("The hooks are setup");
+    }
     BOOL::from(true)
 }
