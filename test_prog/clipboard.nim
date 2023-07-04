@@ -1,4 +1,4 @@
-import std/strformat
+import std/[strformat]
 import winim/lean
 import nclip
 
