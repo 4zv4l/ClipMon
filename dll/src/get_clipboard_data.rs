@@ -1,5 +1,5 @@
 // clipboard handling
-use clipboard_win::{formats, get_clipboard};
+use clipboard_win::{formats, Getter};
 // hooking
 use retour::static_detour;
 use libloading::Library;
@@ -17,7 +17,14 @@ pub fn hook_get_clipboard_data() {
 // hooked function
 fn detour_get_clipboard_data(uformat: u32) -> HANDLE {
     tracing::info!("GetClipboardData :: Hooked");
-    let content: String = get_clipboard(formats::Unicode).unwrap_or("".into());
+    if uformat != formats::CF_UNICODETEXT {
+        tracing::warn!("GetClipboardData :: illegal format {uformat}");
+        return HANDLE(0)
+    }
+    let mut content = Vec::new();
+    let ascii = formats::RawData(formats::CF_UNICODETEXT);
+    let _ = ascii.read_clipboard(&mut content);
+    let content = String::from_utf8(content).unwrap_or("error :(".into());
     tracing::info!("GetClipboardData :: {content}");
     unsafe { HookGetClipboardData.call(uformat) }
 }
