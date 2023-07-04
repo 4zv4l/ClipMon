@@ -16,6 +16,7 @@ pub fn hook_get_clipboard_data() {
 
 // hooked function
 fn detour_get_clipboard_data(uformat: u32) -> HANDLE {
+    tracing::info!("GetClipboardData :: Hooked");
     let content: String = get_clipboard(formats::Unicode).unwrap_or("".into());
     tracing::info!("GetClipboardData :: {content}");
     unsafe { HookGetClipboardData.call(uformat) }

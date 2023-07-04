@@ -3,6 +3,8 @@
 // logging
 use once_cell::sync::OnceCell;
 use tracing_appender::non_blocking::WorkerGuard;
+use tracing_subscriber::fmt;
+use tracing_subscriber::prelude::*;
 // winapi/c interactions
 use std::os::raw::c_void;
 use windows::Win32::Foundation::*;
@@ -17,9 +19,13 @@ mod get_clipboard_data;
 static GUARD: OnceCell<WorkerGuard> = OnceCell::new();
 fn setup_logging() -> WorkerGuard {
     let file_appender = tracing_appender::rolling::daily("", "clipmon.log");
-    let (non_blocking, _guard) = tracing_appender::non_blocking(file_appender);
-    tracing_subscriber::fmt().with_writer(non_blocking).init();
-    _guard
+    let (file_writer, guard) = tracing_appender::non_blocking(file_appender);
+    tracing::subscriber::set_global_default(
+        fmt::Subscriber::builder()
+            .finish()
+            .with(fmt::Layer::default().with_writer(file_writer))
+    ).expect("Unable to set global tracing subscriber");
+    guard
 }
 
 #[no_mangle]
