@@ -16,17 +16,22 @@ pub fn hook_get_clipboard_data() {
 
 // hooked function
 fn detour_get_clipboard_data(uformat: u32) -> HANDLE {
+    // if handle is 0 just skip it
     let ret = unsafe { HookGetClipboardData.call(uformat) };
     if ret == HANDLE(0) { return HANDLE(0) }
+
+    // disable the hook to avoid infinite loop
     unsafe {HookGetClipboardData.disable().unwrap();}
 
     match uformat {
+        // if text then get and print it to logs
         formats::CF_UNICODETEXT|formats::CF_TEXT => {
             let content = get_clipboard::<String, formats::Unicode>(formats::Unicode).unwrap();
             tracing::info!("'{content}'");
             unsafe { HookGetClipboardData.enable().unwrap(); }
             ret
         },
+        // else error, if files then show the copied paths
         _ => {
             tracing::warn!("Illegal format {uformat}");
             if uformat == formats::CF_HDROP {
