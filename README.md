@@ -13,3 +13,13 @@ Clipboard Monitoring during RDP Session.
 - [ ] Monitoring code in the detour functions
 - [ ] Setup config file
 - [ ] Update `README.md` with *installation* and *setup* instructions
+
+## Testing
+
+If you wanna test it you will need:  
+
+- Windows Server with RDP
+- RDP Client
+- Set IFEO `rdpclip.exe` with `debugger` set to `path/to/clipmon_injector`
+- Do random copy/paste from server to client and vice versa
+- Check the logs at `path/to/clipmon_injector/clipmon.log`
