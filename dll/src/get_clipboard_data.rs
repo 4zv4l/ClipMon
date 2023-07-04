@@ -16,15 +16,6 @@ pub fn hook_get_clipboard_data() {
 
 // hooked function
 fn detour_get_clipboard_data(uformat: u32) -> HANDLE {
-    tracing::info!("GetClipboardData :: Hooked");
-    if uformat != formats::CF_UNICODETEXT {
-        tracing::warn!("GetClipboardData :: illegal format {uformat}");
-        return HANDLE(0)
-    }
-    let mut content = Vec::new();
-    let ascii = formats::RawData(formats::CF_UNICODETEXT);
-    let _ = ascii.read_clipboard(&mut content);
-    let content = String::from_utf8(content).unwrap_or("error :(".into());
-    tracing::info!("GetClipboardData :: {content}");
+    tracing::info!("GetClipboardData");
     unsafe { HookGetClipboardData.call(uformat) }
 }

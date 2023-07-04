@@ -16,6 +16,6 @@ pub fn hook_set_clipboard_data() {
 
 // hooked function
 fn detour_set_clipboard_data(uformat: u32, hmem: HANDLE) -> HANDLE {
-    tracing::info!("SetClipboardData :: Hooked");
+    tracing::info!("SetClipboardData");
     unsafe { HookSetClipboardData.call(uformat, hmem) }
 }
