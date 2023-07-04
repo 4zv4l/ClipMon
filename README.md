@@ -23,3 +23,5 @@ If you wanna test it you will need:
 - Set IFEO `rdpclip.exe` with `debugger` set to `path/to/clipmon_injector`
 - Do random copy/paste from server to client and vice versa
 - Check the logs at `path/to/clipmon_injector/clipmon.log`
+
+> Might have to modify the TARGET in the injector to rdpclip.exe
