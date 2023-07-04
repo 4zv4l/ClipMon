@@ -1,0 +1,8 @@
+[workspace]
+members = ["dll", "injector"]
+
+[profile.release]
+lto = true
+strip = true
+panic = "abort"
+opt-level = "z"
