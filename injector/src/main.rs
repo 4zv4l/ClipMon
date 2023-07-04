@@ -23,7 +23,7 @@ fn setup_logging() -> WorkerGuard {
 }
 
 fn main() {
-    const TARGET: &str = "loop_messagebox.exe";
+    const TARGET: &str = "rdpclip.exe";
     const DLL: &str = "clipmon.dll";
 
     let _guard = setup_logging();
@@ -42,9 +42,11 @@ fn main() {
             tracing::info!("Dll has been injected :)");
         },
         None => {
-            return tracing::error!("couldn't find {TARGET}");
+            tracing::error!("couldn't find {TARGET}");
+            proc.kill().unwrap();
+            return
         }
     }
-    std::thread::sleep(std::time::Duration::from_secs(10));
+    std::thread::sleep(std::time::Duration::from_secs(60));
     proc.kill().unwrap();
 }
